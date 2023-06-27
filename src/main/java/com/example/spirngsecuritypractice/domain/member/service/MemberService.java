@@ -14,6 +14,7 @@ import com.example.spirngsecuritypractice.domain.Jwt.service.JwtTokenProvider;
 import com.example.spirngsecuritypractice.domain.member.dto.response.MemberResponse;
 import com.example.spirngsecuritypractice.domain.member.model.Member;
 import com.example.spirngsecuritypractice.domain.member.repository.MemberRepository;
+import com.example.spirngsecuritypractice.domain.util.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,7 @@ public class MemberService {
         private final AuthenticationManagerBuilder authenticationManagerBuilder;
         private final JwtTokenProvider jwtTokenProvider;
         private final PasswordEncoder passwordEncoder;
+        private final SecurityUtil securityUtil;
 
         @Transactional
         public TokenInfoDto login(String memberName, String password) {
@@ -41,6 +43,8 @@ public class MemberService {
 
                 // 3. 인증 정보를 기반으로 JWT 토큰 생성
                 TokenInfoDto tokenInfoDto = jwtTokenProvider.generateToken(authentication);
+
+                System.out.println("memberName : " + securityUtil.getCurrentMemberName());
 
                 return tokenInfoDto;
         }

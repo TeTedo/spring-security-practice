@@ -68,4 +68,9 @@ public class MemberController {
     public String admin() {
         return "success";
     }
+
+    @GetMapping("/any")
+    public String any() {
+        return "success";
+    }
 }

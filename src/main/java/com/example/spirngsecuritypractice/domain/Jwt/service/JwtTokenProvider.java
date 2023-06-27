@@ -54,25 +54,35 @@ public class JwtTokenProvider {
 
         // AccessToken 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TIME);
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String accessToken = getAccessToken(authentication, authorities, accessTokenExpiresIn);
 
         // RefreshToken 생성
         Date refreshTokenExpiresIn = new Date(now + REFRESH_TIME);
-        String refreshToken = Jwts.builder()
-                .setExpiration(refreshTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String refreshToken = getRefreshToken(refreshTokenExpiresIn);
 
         return TokenInfoDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    // AccessToken 만드는 method
+    private String getAccessToken(Authentication authentication, String authorities, Date accessTokenExpiresIn) {
+        return Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    // RefreshToken 만드는 method
+    public String getRefreshToken(Date refreshTokenExpiresIn) {
+        return Jwts.builder()
+                .setExpiration(refreshTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메소드
@@ -84,6 +94,7 @@ public class JwtTokenProvider {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
+        log.info("claims에 저장되는 형태" + claims.get("auth").toString());
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities = Arrays
                 .stream(claims.get("auth").toString().split(","))
