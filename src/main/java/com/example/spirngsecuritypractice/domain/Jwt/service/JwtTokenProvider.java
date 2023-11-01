@@ -34,8 +34,8 @@ public class JwtTokenProvider {
 
     private final Key key;
 
-    private static final long ACCESS_TIME = 60 * 1000L;
-    private static final long REFRESH_TIME = 2 * 60 * 1000L;
+    private static final long ACCESS_TIME = 5 * 60 * 1000L;
+    private static final long REFRESH_TIME = 10 * 60 * 1000L;
 
     // 키 등록 (생성자)
     public JwtTokenProvider(@Value("${jwt.secret.key}") String secretKey) {

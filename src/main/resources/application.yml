@@ -17,9 +17,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  sql:
-    init:
-      mode: always
 server:
   port: 8081
 

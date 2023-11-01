@@ -28,8 +28,8 @@ public class MemberController {
     public ResponseEntity<TokenInfoDto> login(
             @RequestBody MemberLoginRequestDto memberLoginRequestDto) {
 
-        String memberName = memberLoginRequestDto.memberName();
-        String password = memberLoginRequestDto.password();
+        String memberName = memberLoginRequestDto.getMemberName();
+        String password = memberLoginRequestDto.getPassword();
         TokenInfoDto tokenInfoDto = memberService.login(memberName, password);
 
         return ResponseEntity.ok().body(tokenInfoDto);
@@ -39,8 +39,8 @@ public class MemberController {
     public ResponseEntity<MemberResponse> signUp(
             @RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
 
-        String memberName = memberSignUpRequestDto.memberName();
-        String password = memberSignUpRequestDto.password();
+        String memberName = memberSignUpRequestDto.getMemberName();
+        String password = memberSignUpRequestDto.getPassword();
 
         MemberResponse memberResponse = memberService.signUp(memberName, password);
 
@@ -51,8 +51,8 @@ public class MemberController {
     public ResponseEntity<MemberResponse> adminSignup(
             @RequestBody MemberSignUpRequestDto memberSignUpRequestDto) {
 
-        String memberName = memberSignUpRequestDto.memberName();
-        String password = memberSignUpRequestDto.password();
+        String memberName = memberSignUpRequestDto.getMemberName();
+        String password = memberSignUpRequestDto.getPassword();
 
         MemberResponse memberResponse = memberService.adminSignUp(memberName, password);
 
