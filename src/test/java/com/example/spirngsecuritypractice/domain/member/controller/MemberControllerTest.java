@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MemberControllerTest {
@@ -43,8 +45,20 @@ public class MemberControllerTest {
     @Test
     @WithMockUser(roles = { "USER", "ADMIN" })
     @DisplayName("유저나 어드민 권한으로 /members/test api 이용 가능")
-    public void testAccessWithUserAndAdminRole() throws Exception {
+    public void testAccessWithUserOrAdminRole() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/members/test"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("유저나 어드민 권한으로 /members/test api 이용 가능 - 개별 호출 테스트")
+    public void testAccessWithUserAndAdminRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/test")
+                .with(user("test").roles("USER")))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/test")
+                .with(user("test").roles("ADMIN")))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
