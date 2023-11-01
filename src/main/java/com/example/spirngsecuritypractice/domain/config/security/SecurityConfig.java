@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.spirngsecuritypractice.domain.Jwt.exception.JwtAccessDeniedException;
+import com.example.spirngsecuritypractice.domain.Jwt.exception.JwtAuthenticationEntryPoint;
 import com.example.spirngsecuritypractice.domain.Jwt.filter.JwtAuthenticationFilter;
 import com.example.spirngsecuritypractice.domain.Jwt.service.JwtTokenProvider;
 
@@ -22,12 +24,19 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedException jwtAccessDeniedException;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedException))
+
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/members/login").permitAll()
                         .requestMatchers("/members/test").hasAnyRole("USER", "ADMIN")
